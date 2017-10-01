@@ -46,6 +46,13 @@ gulp.task('style', function () {
     .pipe(browserSync.stream());
 });
 
+gulp.task('libsSync', function() {
+	return gulp.src('')
+	.pipe(plumber())
+	.pipe(dirSync('libs', outputDir + 'libs/', {printSummary: true}))
+	.pipe(browserSync.stream());
+});
+
 gulp.task('imageSync', function () {
     return gulp.src('')
     .pipe(plumber())
@@ -68,7 +75,7 @@ gulp.task('jsSync', function () {
 });
 
 gulp.task('watch', function () {
-		gulp.watch('pug/**/*.jade', ['pug']);
+		gulp.watch('pug/**/*.pug', ['pug']);
 		gulp.watch('less/**/*.less', ['style']);
     gulp.watch('js/**/*.js', ['jsSync']);
     gulp.watch('img/**/*', ['imageSync']);
@@ -84,7 +91,7 @@ gulp.task('browser-sync', function () {
     });
 });
 
-gulp.task('default', ['pug', 'style', 'imageSync', 'jsSync', 'fontsSync', 'watch', 'browser-sync']);
+gulp.task('default', ['pug', 'style', 'libsSync', 'imageSync', 'jsSync', 'fontsSync', 'watch', 'browser-sync']);
 
 /* Build */
 gulp.task('clean', function () {
@@ -98,6 +105,11 @@ gulp.task('imgBuild', function () {
       imagemin.jpegtran({progressive: true})
     ]))
     .pipe(gulp.dest(buildDir + 'img/'));
+});
+
+gulp.task('libsBuild', function () {
+	return gulp.src(outputDir + 'libs/**/*')
+	.pipe(gulp.dest(buildDir + 'libs/'));
 });
 
 gulp.task('fontsBuild', function () {
@@ -129,5 +141,5 @@ gulp.task('validation', function () {
 
 
 gulp.task('build', ['clean'], function () {
-    gulp.start('htmlBuild', 'imgBuild', 'fontsBuild', 'jsBuild', 'cssBuild');
+    gulp.start('htmlBuild', 'imgBuild', 'libsBuild', 'fontsBuild', 'jsBuild', 'cssBuild');
 });
